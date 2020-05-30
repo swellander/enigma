@@ -6,40 +6,41 @@ class Enigma(object):
 
     num_potential_chars = 95
     num_rotors = 3
-    step = 0
 
-    def __init__(self):
+    def __init__(self, key):
         rotor_1 = self.__generate_rotor()
         rotor_2 = self.__generate_rotor()
         rotor_3 = self.__generate_rotor()
         self.reflector = self.__generate_rotor()
         self.rotors = (rotor_1, rotor_2, rotor_3)
 
+        self.initial_step = self.curr_step = self._get_initial_step(key)
+
     def encrypt_text(self, text: str) -> str:
         encrypted_text = ''
         for char in text:
             encrypted_text += self.__encrypt_char(char)
-            self.step += 1
+            self.curr_step += 1
 
-        self.__reset_step_counter()
+        self.__reset_curr_step()
         return encrypted_text
 
     def decrypt_text(self, text: str) -> str:
         decrypted_text = ''
         for char in text:
             decrypted_text += self.__decrypt_char(char)
-            self.step += 1
+            self.curr_step += 1
 
-        self.__reset_step_counter()
+        self.__reset_curr_step()
         return decrypted_text
 
-    def __reset_step_counter(self):
+    def __reset_curr_step(self):
         """
-        Resets the rotor counter to 0. To be used after encrypting
-        an entire message.
+        Resets the settings of the machine back to their initial state.
+        To be used after encrypting an entire message.
         """
 
-        self.step = 0
+        self.curr_step = self.initial_step
 
     def __encrypt_char(self, char: str) -> str:
         """
@@ -91,7 +92,7 @@ class Enigma(object):
         front = 1 if reflected else 0
         back = 0 if reflected else 1
         rotor_length = len(rotor)
-        shift = floor(self.step / rotor_length**rotor_num)
+        shift = floor(self.curr_step / rotor_length**rotor_num)
 
         for idx, input_mapping in enumerate(rotor):
             if input_mapping[front] == char:
@@ -146,9 +147,12 @@ class Enigma(object):
 
         return rand_list_of_chars
 
+    def _get_initial_step(self, key: str) -> int:
+        return sum([ord(char) for char in key])
+
 
 def main():
-    enigma = Enigma()
+    enigma = Enigma('secret')
 
     msg_to_encrypt = input("   Enter message to be encrypted: ")
     encrypted_msg = enigma.encrypt_text(msg_to_encrypt)
@@ -161,7 +165,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# a f  a x
-# b w  b s
-# c e  c h
