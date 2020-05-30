@@ -8,10 +8,10 @@ class Enigma(object):
     num_rotors = 3
 
     def __init__(self, key):
-        rotor_1 = self.__generate_rotor()
-        rotor_2 = self.__generate_rotor()
-        rotor_3 = self.__generate_rotor()
-        self.reflector = self.__generate_rotor()
+        rotor_1 = self._generate_rotor()
+        rotor_2 = self._generate_rotor()
+        rotor_3 = self._generate_rotor()
+        self.reflector = self._generate_rotor()
         self.rotors = (rotor_1, rotor_2, rotor_3)
 
         self.initial_step = self.curr_step = self._get_initial_step(key)
@@ -19,22 +19,22 @@ class Enigma(object):
     def encrypt_text(self, text: str) -> str:
         encrypted_text = ''
         for char in text:
-            encrypted_text += self.__encrypt_char(char)
+            encrypted_text += self._encrypt_char(char)
             self.curr_step += 1
 
-        self.__reset_curr_step()
+        self._reset_curr_step()
         return encrypted_text
 
     def decrypt_text(self, text: str) -> str:
         decrypted_text = ''
         for char in text:
-            decrypted_text += self.__decrypt_char(char)
+            decrypted_text += self._decrypt_char(char)
             self.curr_step += 1
 
-        self.__reset_curr_step()
+        self._reset_curr_step()
         return decrypted_text
 
-    def __reset_curr_step(self):
+    def _reset_curr_step(self):
         """
         Resets the settings of the machine back to their initial state.
         To be used after encrypting an entire message.
@@ -42,34 +42,34 @@ class Enigma(object):
 
         self.curr_step = self.initial_step
 
-    def __encrypt_char(self, char: str) -> str:
+    def _encrypt_char(self, char: str) -> str:
         """
         Pass character forward through rotors.
         """
 
-        return self.__process_char(char)
+        return self._process_char(char)
 
-    def __decrypt_char(self, char: str) -> str:
+    def _decrypt_char(self, char: str) -> str:
         """
         Pass character backward through rotors.
         """
 
-        return self.__process_char(char, reflected=True)
+        return self._process_char(char, reflected=True)
 
-    def __process_char(self, char: str, reflected=False) -> str:
+    def _process_char(self, char: str, reflected=False) -> str:
         """
         Passes a character through rotors, changing its value
         for each rotor.
         """
         rotor_listing = [(idx, rotor) for idx, rotor in enumerate(self.rotors)]
         for rotor_num, rotor in rotor_listing:
-            char = self.__convert_char(
+            char = self._convert_char(
                 char=char,
                 rotor=rotor,
                 rotor_num=rotor_num,
                 reverse=reflected)
 
-        char = self.__convert_char(
+        char = self._convert_char(
             char=char,
             rotor=self.reflector,
             reflected=reflected,
@@ -77,7 +77,7 @@ class Enigma(object):
             reverse=reflected)
 
         for rotor_num, rotor in rotor_listing[::-1]:
-            char = self.__convert_char(
+            char = self._convert_char(
                 char=char,
                 rotor=rotor,
                 reflected=True,
@@ -86,7 +86,7 @@ class Enigma(object):
 
         return char
 
-    def __convert_char(self, *, char: str, rotor: list, rotor_num: int, reverse: bool, reflected=False) -> str:
+    def _convert_char(self, *, char: str, rotor: list, rotor_num: int, reverse: bool, reflected=False) -> str:
         """ Passes char through an individual rotor"""
 
         front = 1 if reflected else 0
@@ -105,15 +105,15 @@ class Enigma(object):
                 output_char = rotor[output_mapping_idx][back]
                 return output_char
 
-    def __generate_rotor(self) -> list:
+    def _generate_rotor(self) -> list:
         """
         Returns a list of tuples representing an enigma rotor,
         where the first value of the tuple is the input (front) and the
         second value is the output (back). https://en.wikipedia.org/wiki/Enigma_rotor_details
         """
 
-        front = self.__generate_random_ascii_char_list()
-        back = self.__generate_random_ascii_char_list()
+        front = self._generate_random_ascii_char_list()
+        back = self._generate_random_ascii_char_list()
         rotor = []
 
         for i in range(len(front)):
@@ -124,7 +124,7 @@ class Enigma(object):
 
         return rotor
 
-    def __generate_random_ascii_char_list(self) -> list:
+    def _generate_random_ascii_char_list(self) -> list:
         """
         Returns a list of ASCII character strings in a randomized order.
         Used for creating rotors.
