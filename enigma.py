@@ -499,20 +499,3 @@ class Enigma(object):
 
     def _get_initial_step(self, key: str) -> int:
         return int(key.encode().hex(), 16)
-
-
-def main():
-    key = input("   Enter a key: ")
-    enigma = Enigma(key)
-
-    msg_to_encrypt = input("   Enter message to be encrypted: ")
-    encrypted_msg = enigma.encrypt_text(msg_to_encrypt)
-
-    print("Encrypted message: ", encrypted_msg)
-    decrypted_msg = enigma.decrypt_text(encrypted_msg)
-
-    print("Decrypted message: ", decrypted_msg)
-
-
-if __name__ == "__main__":
-    main()
