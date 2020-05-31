@@ -24,7 +24,7 @@ def process_file(file_path: str, enigma_instance, encrypt: bool):
     move(abs_path, file_path)
 
 
-def main():
+def run():
     _, action, file_path = sys.argv
 
     action = action.strip().lower()
@@ -49,4 +49,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()
