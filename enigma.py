@@ -4,9 +4,6 @@ from math import floor
 
 class Enigma(object):
 
-    num_potential_chars = 95
-    num_rotors = 3
-
     rotor_1 = [
         ("'", '/'),
         ('d', 'D'),
