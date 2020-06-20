@@ -1,5 +1,7 @@
 __pycache__
 enigma.egg-info/
 dist/
+build/
 test.txt
 enigma.egg-info/
+.vscode
