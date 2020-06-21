@@ -8,9 +8,8 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - run: 
+          command: pip install -r dev-requirements.txt
       - run:
           command: python -m pytest 
           name: Test
