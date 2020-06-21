@@ -25,6 +25,7 @@ def process_file(file_path: str, enigma_instance, encrypt: bool):
 
 
 def run():
+    print('Working!')
     _, action, file_path = sys.argv
 
     action = action.strip().lower()
