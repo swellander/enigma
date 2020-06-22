@@ -1,5 +1,4 @@
-from unittest import TestCase
-from mock import patch
+from unittest import TestCase, mock
 
 from enigma import Enigma
 
@@ -39,7 +38,7 @@ class TestEnigma(TestCase):
         returned_val = self.enigma._decrypt_char('a')
         assert type(returned_val) is str
 
-    @patch.object(Enigma, '_process_char')
+    @mock.patch.object(Enigma, '_process_char')
     def test__decrypt_char_calls_process_char_with_reflected_true(self, mock_process_char):
         self.enigma._decrypt_char('a')
         mock_process_char.assert_called_with('a', reflected=True)
@@ -48,7 +47,7 @@ class TestEnigma(TestCase):
         returned_val = self.enigma._encrypt_char('a')
         assert type(returned_val) is str
 
-    @patch.object(Enigma, '_process_char')
+    @mock.patch.object(Enigma, '_process_char')
     def test__encrypt_char_calls_process_char_with_reflected_true(self, mock_process_char):
         self.enigma._encrypt_char('a')
         mock_process_char.assert_called_with('a')
@@ -61,3 +60,49 @@ class TestEnigma(TestCase):
 
         self.enigma._reset_curr_step()
         assert self.enigma.curr_step == self.enigma.initial_step
+
+    def test_encrypt_text_returns_a_string(self):
+        return_val = self.enigma.encrypt_text('secret message')
+
+        assert type(return_val) is str
+
+    @mock.patch.object(Enigma, '_reset_curr_step')
+    def test_encrypt_text_calls_reset_curr_step(self, mock_reset_curr_step):
+        self.enigma.encrypt_text('secret message')
+        mock_reset_curr_step.assert_called_once()
+
+    def test_encrypt_text_encrypts_consistently(self):
+        msg_to_encrypt = 'secret message'
+        first_encrypted_msg = self.enigma.encrypt_text(msg_to_encrypt)
+        second_encrypted_msg = self.enigma.encrypt_text(msg_to_encrypt)
+
+        assert first_encrypted_msg == second_encrypted_msg
+
+    def test_encrypt_text_does_not_return_original_text(self):
+        msg_to_encrypt = 'secret message'
+        encrypted_msg = self.enigma.encrypt_text(msg_to_encrypt)
+
+        assert encrypted_msg != msg_to_encrypt
+
+    def test_decrypt_text_returns_a_string(self):
+        return_val = self.enigma.decrypt_text('jfsd#jd0')
+
+        assert type(return_val) is str
+
+    @mock.patch.object(Enigma, '_reset_curr_step')
+    def test_decrypt_text_calls_reset_curr_step(self, mock_reset_curr_step):
+        self.enigma.decrypt_text('jfsd#jd0')
+        mock_reset_curr_step.assert_called_once()
+
+    def test_decrypt_text_decrypts_consistently(self):
+        msg_to_decrypt = 'jfsd#jd0'
+        first_decrypted_msg = self.enigma.decrypt_text(msg_to_decrypt)
+        second_decrypted_msg = self.enigma.decrypt_text(msg_to_decrypt)
+
+        assert first_decrypted_msg == second_decrypted_msg
+
+    def test_decrypt_text_does_not_return_original_text(self):
+        msg_to_decrypt = 'jfsd#jd0'
+        decrypted_msg = self.enigma.decrypt_text(msg_to_decrypt)
+
+        assert decrypted_msg != msg_to_decrypt
